@@ -1,0 +1,8 @@
+Version 3.1
+# namespace proximus-meta
+# first-file
+* u L index-drop.lua 75 -- Delete a record.
+function deleteNode(rec)
+    aerospike:remove(rec)
+end
+
