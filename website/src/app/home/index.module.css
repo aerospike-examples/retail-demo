@@ -1,0 +1,25 @@
+.home {
+    width: 100%;
+    max-width: 1200px;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+    align-items: flex-start;
+    padding: 50px 10px;
+}
+.home form,
+.search {
+    width: 80%;
+    margin: auto;
+}
+.prodContainer {
+    width: 100%;
+    display: flex;
+    flex-flow: row wrap;
+    gap: 20px;
+}
+.prodImg {
+    width: 150px;
+    height: auto;
+}
