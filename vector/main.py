@@ -7,6 +7,7 @@ from embed import create_embedding
 from clients import vector_client, aerospike_client
 from threading import Lock
 from dotenv import load_dotenv
+import array
 
 # Load .env file
 load_dotenv("../.env")
@@ -45,9 +46,16 @@ async def get_category():
 async def get_product(prod: str):
     key = (namespace, set_name, prod)
     (_, _, bins) = aerospike_client.get(key=key)
-    bins.pop('img_embedding', None)
-
-    return bins
+    embedding = array.array('f', bins.pop('img_embedding', None))[2:].tolist()
+    
+    search = vector_search(embedding, bins=["id", "name", "images", "brandName"], count=6)
+    
+    related = []
+    for item in search:
+        if not str(item.bins["id"]) == str(prod):
+            related.append(item.bins)
+    
+    return {"product": bins, "related": related}
 
 @app.get("/rest/v1/search")
 async def search(q: str):

@@ -4,7 +4,7 @@ import styles from "./index.module.css";
 const Footer = () => {
     return (
         <footer className={styles.footer}>
-            <span>Copyright {new Date().getFullYear()}</span>
+            <span>&#169; {new Date().getFullYear()} AeroApparel</span>
         </footer>
     )
 }
