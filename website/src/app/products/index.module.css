@@ -1,0 +1,26 @@
+.container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+}
+.products {
+    width: 100%;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-around;
+    gap: 60px;
+}
+.prodImg {
+    width: 150px;
+    height: auto;
+}
+.filter {
+    font-size: 1.25rem;
+}
+@media screen and (min-width: 996px) {
+    .products {
+        gap: 60px max(calc((100% - 1000px) / 4), 20px);
+        justify-content: flex-start;
+    }
+}

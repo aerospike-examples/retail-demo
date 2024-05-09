@@ -1,18 +1,9 @@
 import React from 'react'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import Home from './app/home';
-import Product from './app/product';
-import Category from './app/category';
+import Home, { homeLoader } from './app/home';
+import Product, { productLoader } from './app/product';
+import Products, { searchLoader, categoryLoader } from './app/products';
 import App from './app';
-
-const url = "http://localhost:8080/rest/v1/";
-             
-const productLoader = async (product) => {
-    let response = await fetch(url + `get?prod=${product}`);
-    let data = response.json();
-
-    return data;
-}
 
 const Routes = () => {
     const router = createBrowserRouter([
@@ -23,9 +14,10 @@ const Routes = () => {
             children: [{
                 errorElement: <div />,
                 children: [
-                    {index: true, element: <Home />},
-                    {path: "/product/:product", element: <Product />, loader: ({params: { product}}) => productLoader(product)},
-                    {path: "/category/:category", element: <Category />, loader: () => {}}
+                    {index: true, element: <Home />, loader: homeLoader},
+                    {path: "/search", element: <Products />, loader: searchLoader},
+                    {path: "/product/:product", element: <Product />, loader: ({params: { product }}) => productLoader(product)},
+                    {path: "/category/:category", element: <Products />, loader: ({params: { category }}) => categoryLoader(category)}
                 ]
             }]
         }

@@ -20,12 +20,7 @@ body {
 	min-height: 100vh;
 }
 a {
-	font-weight: 500;
-	color: #646cff;
-	text-decoration: inherit;
-}
-a:hover {
-  	color: #747bff;
+	text-decoration: none;
 }
 button {
 	border-radius: 8px;

@@ -34,6 +34,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.get("/rest/v1/home")
+async def get_category():
+    key = (namespace, set_name, "product_meta")
+    (_, _, bins) = aerospike_client.get(key=key)
+
+    return bins
+
 @app.get("/rest/v1/get")
 async def get_product(prod: str):
     key = (namespace, set_name, prod)
@@ -45,7 +52,7 @@ async def get_product(prod: str):
 @app.get("/rest/v1/search")
 async def search(q: str):
     embedding = create_embedding(q)
-    results = vector_search(embedding, bins=["id", "name", "images"])
+    results = vector_search(embedding, bins=["id", "name", "images", "brandName"])
 
     products = []
     for result in results:
@@ -54,6 +61,10 @@ async def search(q: str):
         products.append(product)
     
     return products
+
+@app.get("/rest/v1/category")
+async def get_category(cat: str):
+    pass
 
 def vector_search(embedding, bins=None, count=20):
     return vector_client.vector_search(

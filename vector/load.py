@@ -34,7 +34,8 @@ def load_data(data):
         "descriptors": data.get("productDescriptors"),
         "variantName": data.get("variantName"),
         "added": data.get("catalogAddDate"),
-        "brand": data.get("brandUserProfile"),
+        "brandName": data.get("brandName"),
+        "brandProfile": data.get("brandUserProfile"),
         "ageGroup": data.get("ageGroup"),
         "gender": data.get("gender"),
         "colors": [data.get("baseColour"), data.get("colour1"), data.get("colour2")],
@@ -97,10 +98,10 @@ def create_index():
         dimensions=MODEL_DIM,
         vector_distance_metric=types.VectorDistanceMetric.COSINE,
     )    
-    vector_admin_client.close()
     print("Index created")
 
 create_index()
+vector_admin_client.close()
 
 # Get style files
 files = sum([glob.glob(prd_path)], [])

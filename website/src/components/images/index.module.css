@@ -1,0 +1,22 @@
+.images {
+    display: flex;
+    max-width: 500px;
+    gap: 20px;
+}
+.thumbnails {
+    display: flex;
+    flex-direction: column;
+    width: 48px;
+    gap: 10px;
+}
+.thumbnail {
+    border: 1px solid lightgray;
+    border-radius: 5px;
+    overflow: hidden;
+}
+.selected {
+    border-color: blue;
+}
+.selectedImg img {
+    width: calc(100% - 48px);
+}
