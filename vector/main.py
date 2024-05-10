@@ -1,13 +1,14 @@
+import os
+import array
+import time
 from typing import Annotated
 from fastapi import FastAPI, Depends, HTTPException, Form, status
 from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
-import os
 from embed import create_embedding
 from clients import vector_client, aerospike_client
-from threading import Lock
+from aerospike import predicates as p
 from dotenv import load_dotenv
-import array
 
 # Load .env file
 load_dotenv("../.env")
@@ -36,11 +37,20 @@ app.add_middleware(
 )
 
 @app.get("/rest/v1/home")
-async def get_category():
-    key = (namespace, set_name, "product_meta")
-    (_, _, bins) = aerospike_client.get(key=key)
+async def get_home():
+    query = aerospike_client.query(namespace=namespace, set=set_name)
+    query.where(p.equals("category", "Accessories"))
+    query.select("id", "name", "images", "brandName")
+    query.max_records = 10
 
-    return bins
+    records = query.results()
+    
+    products = []
+    for record in records:
+        (_, _, bins) = record
+        products.append(bins)
+
+    return products
 
 @app.get("/rest/v1/get")
 async def get_product(prod: str):
@@ -49,7 +59,7 @@ async def get_product(prod: str):
     embedding = array.array('f', bins.pop('img_embedding', None))[2:].tolist()
     
     search = vector_search(embedding, bins=["id", "name", "images", "brandName"], count=11)
-    
+
     related = []
     for item in search:
         if not str(item.bins["id"]) == str(prod):
@@ -60,7 +70,10 @@ async def get_product(prod: str):
 @app.get("/rest/v1/search")
 async def search(q: str):
     embedding = create_embedding(q)
+    
+    start = time.time()
     results = vector_search(embedding, bins=["id", "name", "images", "brandName"])
+    time_taken = time.time() - start
 
     products = []
     for result in results:
@@ -68,7 +81,7 @@ async def search(q: str):
         product["distance"] = result.distance
         products.append(product)
     
-    return products
+    return { "products": products, "time": round(time_taken * 1000, 3) }
 
 @app.get("/rest/v1/category")
 async def get_category(cat: str):

@@ -1,0 +1,21 @@
+.styleOptions h4{
+    margin: 0 0 5px 0;
+}
+.options {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+.optImg {
+    width: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: inherit;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid transparent;
+}
+.optImg:hover {
+    border-color: navy;
+}

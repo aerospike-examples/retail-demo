@@ -1,11 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
+import React from "react";
 import styles from "./index.module.css";
 import { useLoaderData } from "react-router-dom";
 import Images from "../../components/images";
-import Card from "../../components/card";
 import Breadcrumbs from "../../components/breadcrumbs";
-import clsx from "clsx";
-import { Chevron } from "../../components/icons";
+import ProductDetail from "../../components/productDetail";
+import Related from "../../components/related";
+import StyleOptions from "../../components/styleOptions";
 
 export const productLoader = async (product) => {
     let response = await fetch(`http://localhost:8080/rest/v1/get?prod=${product}`);
@@ -16,51 +16,27 @@ export const productLoader = async (product) => {
 
 const Product = () => {
     const { product, related } = useLoaderData();
-    const [open, setOpen] = useState(false);
-    const [height, setHeight] = useState(350);
-    const [elemHeight, setElemHeight] = useState(0);
-
-    const toggleOpen = () => {
-        setOpen(!open);
-        setHeight(open ? 350 : elemHeight + 32);
-    }
-
-    const descriptionRef = useRef(null);
-    useEffect(() => {
-        console.log(product);
-        setElemHeight(descriptionRef?.current?.clientHeight)
-    }, [])
 
     return (
-        <div className={styles.product}>
+        <>
             <Breadcrumbs items={[
                 product?.category,
                 product?.subCategory,
-                product?.usage
+                product?.usage,
+                product?.name
             ]} />
-            <div className={styles.productData}>
-                <Images images={product.images} />
-                <div className={styles.prodDetail}>
-                    <h2>{product.name}</h2>
-                    <div className={styles.descContainer} style={{height: `${height}px`}}>
-                        <div 
-                            className={styles.description} 
-                            dangerouslySetInnerHTML={{__html: product?.descriptors?.description?.value}}
-                            ref={descriptionRef} />
-                    </div>
-                    {elemHeight > 350 &&
-                    <div className={styles.more} onClick={toggleOpen}>
-                        <Chevron className={clsx(styles.chevron, open && styles.open)} />
-                    </div>}
+            <div className={styles.product}>
+                <div className={styles.productData}>
+                    <Images images={product.images} />
+                    <ProductDetail name={product.name} descriptors={product?.descriptors} />
                 </div>
+                
+                {product.styles && 
+                <StyleOptions options={product.styles} />}
+
+                <Related related={related} />
             </div>
-            <h2>Other items you may like</h2>
-            <div className={styles.related}>
-                {related.map(related => (
-                    <Card key={related.id} product={related} small />
-                ))}
-            </div>
-        </div>
+        </>
     )
 }
 

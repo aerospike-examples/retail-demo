@@ -18,6 +18,16 @@
 .filter {
     font-size: 1.25rem;
 }
+.resultMeta {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+.time {
+    line-height: 1;
+    font-size: .95rem;
+    font-style: italic;
+}
 @media screen and (min-width: 996px) {
     .products {
         gap: 60px max(calc((100% - 1000px) / 4), 20px);

@@ -1,0 +1,33 @@
+.descContainer {
+    overflow: hidden; 
+    margin-bottom: 10px;
+    transition: height .3s ease;
+}
+.prodDetail {
+    width: 100%;
+    max-width: 600px;
+}
+.prodDetail h2 {
+    margin: 0;
+}
+.description {
+    padding: 0 10px;
+    font-size: 1rem;
+}
+.more {
+    width: 100%;
+    text-align: center;
+    line-height: 1;
+    padding-top: 2px;
+    background-color: rgba(221, 221, 221, .5);
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    cursor: pointer;
+}
+.chevron {
+    transform: rotate(90deg) scale(.8);
+    transition: .3s ease-in-out;
+}
+.chevron.open {
+    transform: rotate(-90deg) scale(.8);
+}

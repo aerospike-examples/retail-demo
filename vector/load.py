@@ -49,6 +49,11 @@ def load_data(data):
         "articleType": data["articleType"]["typeName"],
         "options": data.get("styleOptions")
     }
+
+    colours = data.get("colours")
+    styles = colours.get("colors") if colours else None    
+    if styles:
+        product["styles"] = styles
     
     load_categories(product["category"], product["subCategory"], product["articleType"], product["usage"])
 

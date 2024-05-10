@@ -1,6 +1,6 @@
 .images {
     display: flex;
-    max-width: 600px;
+    height: 500px;
     gap: 40px;
 }
 .thumbnails {
@@ -18,8 +18,9 @@
     border-color: blue;
 }
 .selectedImg {
-    height: 625px;
+    height: 500px;
 }
 .selectedImg img {
-    width: calc(100% - 48px);
+    height: 100%;
+    width: auto;
 }
