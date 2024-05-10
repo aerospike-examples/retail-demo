@@ -14,8 +14,8 @@
     height: 100%;
     max-width: 1440px;
     margin: auto;
-    display: flex;
     align-items: center;
+    justify-content: space-between;
 }
 .headContainer > a {
     line-height: 1;
@@ -24,7 +24,7 @@
 .nav form {
     display: flex;
     align-items: center;
-    width: 100%;
+    flex: 1;
 }
 .nav {
     height: 100%;
@@ -33,7 +33,15 @@
     height: 40px;
     width: auto;
 }
-
+.controls {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+.cart {
+    height: 35px;
+    width: auto;
+}
 .search {
     width: 100%;
     max-width: 900px;

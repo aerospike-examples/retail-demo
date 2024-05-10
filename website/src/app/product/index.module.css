@@ -21,27 +21,19 @@
     margin: 0;
 }
 .related {
+    padding: 20px;
     display: flex;
     gap: 40px;   
+    overflow-x: scroll;
 }
 .descContainer {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    align-items: center;
+    overflow: hidden; 
+    margin-bottom: 10px;
+    transition: height .3s ease;
 }
 .description {
     padding: 0 10px;
     font-size: 1rem;
-    max-height: 1000px;
-    overflow: hidden; 
-    transition: max-height 1s ease;
-}
-.descriptionClamped {
-    max-height: 375px;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 15;
 }
 .more {
     width: 100%;

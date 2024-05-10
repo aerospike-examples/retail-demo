@@ -8,7 +8,7 @@ const Card = ({product, small = false}) => {
     return (
         <a 
             href={`/product/${product.id}`} 
-            className={clsx(small ? styles.cardSmall : styles.card)} >
+            className={clsx(styles.card, small && styles.cardSmall)} >
             <div 
                 className={clsx(small ? styles.imgContainerSmall : styles.imgContainer)} >
                 <img 

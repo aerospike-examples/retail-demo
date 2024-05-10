@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "./index.module.css";
 import { useLoaderData } from "react-router-dom";
 import Images from "../../components/images";
@@ -15,8 +15,21 @@ export const productLoader = async (product) => {
 }
 
 const Product = () => {
-    const {product, related} = useLoaderData();
+    const { product, related } = useLoaderData();
     const [open, setOpen] = useState(false);
+    const [height, setHeight] = useState(350);
+    const [elemHeight, setElemHeight] = useState(0);
+
+    const toggleOpen = () => {
+        setOpen(!open);
+        setHeight(open ? 350 : elemHeight + 32);
+    }
+
+    const descriptionRef = useRef(null);
+    useEffect(() => {
+        console.log(product);
+        setElemHeight(descriptionRef?.current?.clientHeight)
+    }, [])
 
     return (
         <div className={styles.product}>
@@ -29,10 +42,16 @@ const Product = () => {
                 <Images images={product.images} />
                 <div className={styles.prodDetail}>
                     <h2>{product.name}</h2>
-                    <div className={styles.descContainer}>
-                        <div className={clsx(styles.description, !open && styles.descriptionClamped)} dangerouslySetInnerHTML={{__html: product?.descriptors?.description?.value}} />
-                        <div className={styles.more} onClick={() => setOpen(!open)}><Chevron className={clsx(styles.chevron, open && styles.open)} /></div>
+                    <div className={styles.descContainer} style={{height: `${height}px`}}>
+                        <div 
+                            className={styles.description} 
+                            dangerouslySetInnerHTML={{__html: product?.descriptors?.description?.value}}
+                            ref={descriptionRef} />
                     </div>
+                    {elemHeight > 350 &&
+                    <div className={styles.more} onClick={toggleOpen}>
+                        <Chevron className={clsx(styles.chevron, open && styles.open)} />
+                    </div>}
                 </div>
             </div>
             <h2>Other items you may like</h2>

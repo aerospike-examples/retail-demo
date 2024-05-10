@@ -48,7 +48,7 @@ async def get_product(prod: str):
     (_, _, bins) = aerospike_client.get(key=key)
     embedding = array.array('f', bins.pop('img_embedding', None))[2:].tolist()
     
-    search = vector_search(embedding, bins=["id", "name", "images", "brandName"], count=6)
+    search = vector_search(embedding, bins=["id", "name", "images", "brandName"], count=11)
     
     related = []
     for item in search:
