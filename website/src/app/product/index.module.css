@@ -13,6 +13,12 @@
     justify-content: space-between;
     width: 100%;
 }
+.options {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+}
 .related {
     padding: 20px;
     display: flex;

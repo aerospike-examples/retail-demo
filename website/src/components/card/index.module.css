@@ -2,23 +2,32 @@
     width: 200px;
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    align-items: center;
+    gap: 10px;
+    align-items: flex-start;
     justify-content: flex-start;
-    text-align: center;
     color: #000;
     padding: 10px 10px 20px 10px;
-}
-.card:hover {
-    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    font-size: 14px;
     border-radius: 10px;
+    border: 1px solid transparent;
+}
+.card:hover { 
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
 }
 .brand {
     margin: 0;
-    max-height: 51px;
+    max-height: 14px;
+    line-height: 1;
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 1;
+    overflow: hidden; 
+}
+.name {
+    max-height: 42px;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
     overflow: hidden; 
 }
 .imgContainer {
@@ -27,7 +36,6 @@
 }
 .cardSmall {
     width: 150px;
-    gap: 10px;
 }
 .imgContainerSmall {
     width: 125px;

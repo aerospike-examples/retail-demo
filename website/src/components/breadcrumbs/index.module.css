@@ -4,6 +4,7 @@
     gap: 10px;
 }
 .item {
+    font-size: 12px;
     display: block;
     line-height: 1;
     padding: 5px 10px;

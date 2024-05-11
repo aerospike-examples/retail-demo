@@ -4,15 +4,16 @@ import Home, { homeLoader } from './app/home';
 import Product, { productLoader } from './app/product';
 import Products, { searchLoader, categoryLoader } from './app/products';
 import App from './app';
+import NotFound from './app/notFound';
 
 const Routes = () => {
     const router = createBrowserRouter([
         {
             path: '/', 
             element: <App />,
-            errorElement: <div />,
+            errorElement: <NotFound />,
             children: [{
-                errorElement: <div />,
+                errorElement: <NotFound />,
                 children: [
                     {index: true, element: <Home />, loader: homeLoader},
                     {path: "/search", element: <Products />, loader: searchLoader},

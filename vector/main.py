@@ -38,34 +38,38 @@ app.add_middleware(
 
 @app.get("/rest/v1/home")
 async def get_home():
-    query = aerospike_client.query(namespace=namespace, set=set_name)
-    query.where(p.equals("category", "Accessories"))
-    query.select("id", "name", "images", "brandName")
-    query.max_records = 10
+    shoes = aerospike_query(index="subCategory", filter_value="Shoes")
+    bags = aerospike_query(index="subCategory", filter_value="Bags")
+    wallets = aerospike_query(index="subCategory", filter_value="Wallets")
+    watches = aerospike_query(index="subCategory", filter_value="Watches")
+    headwear = aerospike_query(index="subCategory", filter_value="Headwear")
 
-    records = query.results()
-    
-    products = []
-    for record in records:
-        (_, _, bins) = record
-        products.append(bins)
 
-    return products
+    return {
+        "Shoes": shoes, 
+        "Bags": bags,
+        "Wallets": wallets,
+        "Watches": watches,
+        "Headwear": headwear
+    }
 
 @app.get("/rest/v1/get")
 async def get_product(prod: str):
     key = (namespace, set_name, prod)
-    (_, _, bins) = aerospike_client.get(key=key)
-    embedding = array.array('f', bins.pop('img_embedding', None))[2:].tolist()
-    
-    search = vector_search(embedding, bins=["id", "name", "images", "brandName"], count=11)
+    try:
+        (_, _, bins) = aerospike_client.get(key=key)
+        embedding = array.array('f', bins.pop('img_embedding', None))[2:].tolist()
+        
+        search = vector_search(embedding, bins=["id", "name", "images", "brandName"], count=11)
 
-    related = []
-    for item in search:
-        if not str(item.bins["id"]) == str(prod):
-            related.append(item.bins)
-    
-    return {"product": bins, "related": related}
+        related = []
+        for item in search:
+            if not str(item.bins["id"]) == str(prod):
+                related.append(item.bins)
+        
+        return {"error": None, "product": bins, "related": related}
+    except:
+        return {"error": "Product not found"}
 
 @app.get("/rest/v1/search")
 async def search(q: str):
@@ -95,3 +99,18 @@ def vector_search(embedding, bins=None, count=20):
         limit=count,
         bin_names=bins
     )
+
+def aerospike_query(index, filter_value, count=10):
+    query = aerospike_client.query(namespace=namespace, set=set_name)
+    query.where(p.equals(index, filter_value))
+    query.select("id", "name", "images", "brandName")
+    query.max_records = count
+
+    records = query.results()
+    
+    products = []
+    for record in records:
+        (_, _, bins) = record
+        products.append(bins)
+    
+    return products

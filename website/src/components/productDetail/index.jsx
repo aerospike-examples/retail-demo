@@ -5,12 +5,12 @@ import { Chevron } from "../../components/icons";
 
 const ProductDetail = ({name, descriptors}) => {
     const [open, setOpen] = useState(false);
-    const [height, setHeight] = useState(450);
+    const [height, setHeight] = useState(429);
     const [elemHeight, setElemHeight] = useState(0);
 
     const toggleOpen = () => {
         setOpen(!open);
-        setHeight(open ? 450 : elemHeight + 32);
+        setHeight(open ? 429 : elemHeight + 32);
     }
 
     const descriptionRef = useRef(null);
@@ -26,6 +26,7 @@ const ProductDetail = ({name, descriptors}) => {
                 .replaceAll("</a>", "</span>")
                 .replaceAll("<strong><br /></strong>", "")
                 .replace("<br /><br /></span>", "</span>")
+                .replace("</p><br/><br/><p>", "</p><p>")
                 .replace("<br /><br /></p>", "</p>");
             value = prepend ? value.replace(prepend[0], prepend[1]) : value;
         }
@@ -47,7 +48,7 @@ const ProductDetail = ({name, descriptors}) => {
                     dangerouslySetInnerHTML={{__html: description + (style_note ? style_note : "") + (size_fit_desc ? size_fit_desc : "") + (materials_care_desc ? materials_care_desc : "")}}
                     ref={descriptionRef} />
             </div>
-            {elemHeight > 450 &&
+            {elemHeight > 429 &&
             <div className={styles.more} onClick={toggleOpen}>
                 <Chevron className={clsx(styles.chevron, open && styles.open)} />
             </div>}

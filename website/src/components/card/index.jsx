@@ -15,14 +15,14 @@ const Card = ({product, small = false}) => {
                     className={clsx(small ? styles.prodImgSmall : styles.prodImg)} 
                     src={img} />
             </div>
-            <h3 
+            <strong 
                 className={styles.brand}
                 >
                 {product.brandName}
-            </h3>
-            <span>
-                {product?.name}
-            </span>
+            </strong>
+            <div className={styles.name}>
+                <span>{product?.name}</span>
+            </div>
         </a>
     )
 }

@@ -1,0 +1,38 @@
+.options h4 {
+    margin: 0 0 5px 0;
+}
+.sizeOptions{
+    border: 1px solid lightgray;
+    border-radius: 5px;
+    width: fit-content;
+    display: flex;
+}
+.option {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    cursor: pointer;
+}
+.option:not(:first-child) {
+    border-left: 1px solid lightgray;
+}
+.option:hover,
+.option.selected {
+    color: navy;
+}
+.option.selected,
+.option.selected + .option {
+    border-color: transparent;
+}
+.option.selected::after {
+    content: "";
+    position: absolute;
+    border: 1px solid navy;
+    border-radius: 5px;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+}

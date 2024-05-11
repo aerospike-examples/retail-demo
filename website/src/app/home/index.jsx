@@ -1,26 +1,21 @@
 import React from "react";
 import styles from "./index.module.css";
 import { useLoaderData } from "react-router-dom";
-import Card from "../../components/card";
+import ProdDisplayHorizontal from "../../components/prodDisplayHorizontal";
 
 export const homeLoader = async () => {
     let response = await fetch(`http://localhost:8080/rest/v1/home`);
-    let data = response.json();
-    
+    let data = await response.json();
     return data;
 }
 
 const Home = () => {
-    const data = useLoaderData();
-    console.log(data)
+    const categories = useLoaderData();
     return (
         <div className={styles.home}>
-            <h2>Accessories</h2>
-            <div className={styles.accessories}>
-                {data.map(product => (
-                    <Card key={product.id} product={product} />
-                ))}
-            </div>
+            {Object.keys(categories).map(key => (
+                <ProdDisplayHorizontal key={key} products={categories[key]} title={key} />
+            ))}
         </div>
     )
 }

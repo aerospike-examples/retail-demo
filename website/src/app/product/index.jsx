@@ -4,13 +4,19 @@ import { useLoaderData } from "react-router-dom";
 import Images from "../../components/images";
 import Breadcrumbs from "../../components/breadcrumbs";
 import ProductDetail from "../../components/productDetail";
-import Related from "../../components/related";
 import StyleOptions from "../../components/styleOptions";
+import ProdDisplayHorizontal from "../../components/prodDisplayHorizontal";
+import SizeOptions from "../../components/sizeOptions";
 
 export const productLoader = async (product) => {
     let response = await fetch(`http://localhost:8080/rest/v1/get?prod=${product}`);
-    let data = response.json();
+    let { error, ...data } = await response.json();
 
+    if(error) throw new Response("", {
+        status: 404,
+        statusText: "Not Found"
+    });
+    console.log(data)
     return data;
 }
 
@@ -27,14 +33,18 @@ const Product = () => {
             ]} />
             <div className={styles.product}>
                 <div className={styles.productData}>
-                    <Images images={product.images} />
-                    <ProductDetail name={product.name} descriptors={product?.descriptors} />
+                    <div className={styles.options}>
+                        <Images images={product.images} />
+                        {product.styles && 
+                        <StyleOptions options={product.styles} />}
+                    </div>
+                    <div className={styles.options}>
+                        <ProductDetail name={product.name} descriptors={product?.descriptors} />
+                        {product.options.length > 1 &&
+                        <SizeOptions options={product.options} />}
+                    </div>
                 </div>
-                
-                {product.styles && 
-                <StyleOptions options={product.styles} />}
-
-                <Related related={related} />
+                <ProdDisplayHorizontal products={related} title="Similar items" />
             </div>
         </>
     )

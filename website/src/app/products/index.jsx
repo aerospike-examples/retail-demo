@@ -7,14 +7,12 @@ export const searchLoader = async ({ request }) => {
     let query = url.searchParams.get("q");
     let response = await fetch(`http://localhost:8080/rest/v1/search?q=${query}`);
     let results = await response.json();
-    
     return {results, query};
 }
 
 export const categoryLoader = async (category) => {
     let response = await fetch(`http://localhost:8080/rest/v1/category?cat=${category}`);
-    let results = response.json();
-
+    let results = await response.json();
     return {results, category};
 }
 
