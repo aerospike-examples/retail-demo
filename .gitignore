@@ -50,4 +50,6 @@ package.nls.*.json
 l10n/
 
 # images
-data/images/**
+data/images/**.jpg
+data/styles/**.json
+aerospike/backup/**
