@@ -84,7 +84,7 @@ def load_categories(cat, subCat, artType, usage):
     aerospike_client.operate(key, ops)
     
 # Create the vector index if it does not exist
-def create_index():
+def create_vector_index():
     print("Checking for vector index")
     for idx in vector_admin_client.index_list():
         if (
@@ -105,8 +105,26 @@ def create_index():
     )    
     print("Index created")
 
-create_index()
+create_vector_index()
 vector_admin_client.close()
+
+def create_string_sindex(bin_name, index_name):
+    try:
+        aerospike_client.index_string_create(
+            namespace,
+            set_name,
+            bin_name,
+            index_name
+        )
+    except:
+        return
+
+def create_secondary_indexes():
+    create_string_sindex("category", "cat_idx")
+    create_string_sindex("subCategory", "subCat_idx")
+    create_string_sindex("usage", "usage_idx")
+
+create_secondary_indexes()
 
 # Get style files
 files = sum([glob.glob(prd_path)], [])
