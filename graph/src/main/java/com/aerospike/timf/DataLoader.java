@@ -43,11 +43,11 @@ public class DataLoader {
 //    public static final String HOST = "172.17.0.3";
     public static final String GREMLIN_HOST = "127.0.0.1";
     public static final int GREMLIN_PORT = 8182;
-    public static final int AEROSPIKE_PORT = 3100;
+    public static final int AEROSPIKE_PORT = 3000;
     public static final String AEROSPIKE_HOST = "127.0.0.1";
     private static final Cluster.Builder BUILDER = Cluster.build().addContactPoint(GREMLIN_HOST).port(GREMLIN_PORT).enableSsl(false);
-    private static final String AEROSPIKE_NS = System.getProperty("PROXIMUS_NAMESPACE"); // "raw-data";
-    private static final String AEROSPIKE_SET = System.getProperty("PROXIMUS_SET"); // "fashion";
+    private static final String AEROSPIKE_NS = "retail-vector"; // "raw-data";
+    private static final String AEROSPIKE_SET = "products"; // "fashion";
     private static final int NUM_USERS = 100_000;
     private final GraphTraversalSource g;
     private final IAerospikeClient client;
@@ -74,7 +74,10 @@ public class DataLoader {
                 sb.append('|');
             }
             first = false;
-            sb.append(record.getValue(bin).toString());
+            Object binValue = record.getValue(bin);
+            if(binValue != null) {
+                sb.append(binValue.toString());
+            }  
         }
         return sb.toString();
     }
@@ -89,7 +92,9 @@ public class DataLoader {
         
     }
     private void updateIndexes(Record record) {
-        String id = record.getString("id");
+        Object binValue = record.getValue("id");
+        String id = binValue.toString();
+
         validIds.add(id);
 
         // Similar products 1: Same gender, season, usage, brandName, different id
@@ -316,9 +321,12 @@ public class DataLoader {
         String image_125x161 = (String) traverseMapPath(imageMap, "search", "resolutions", "125X161");
         String image_180X240 = (String) traverseMapPath(imageMap, "search", "resolutions", "180X240");
         
-        g.addV("item")
-            .property(T.id, record.getString("id"))
-            .property("id", record.getString("id"))
+        Object binValue = record.getValue("id");
+        String id = binValue.toString();
+
+        g.addV("product")
+            .property(T.id, id)
+            .property("id", id)
             .property("name", record.getString("name"))
             .property("gender", record.getString("gender"))
             .property("usage", record.getString("usage"))

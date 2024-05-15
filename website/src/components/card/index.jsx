@@ -3,7 +3,7 @@ import styles from "./index.module.css";
 import clsx from "clsx";
 
 const Card = ({product, small = false}) => {
-    let img = product?.images?.search?.resolutions[small ? "125X161" : "180X240"];
+    let img = product?.images?.search?.resolutions[small ? "125X161" : "180X240"] ?? (small ? product?.image_125X161 : product?.image_180X240);
     img = img ? img.replace("http://", "https://") : img;
     return (
         <a 

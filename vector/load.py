@@ -55,14 +55,16 @@ def load_data(data):
     if styles:
         product["styles"] = styles
     
-    load_categories(product["category"], product["subCategory"], product["articleType"], product["usage"])
-
     key = file.split("/")[-1].split(".")[0]
-    
-    image = Image.open(img_path + key + ".jpg")
-    product["img_embedding"] = create_embedding(image)
 
-    vector_client.put(namespace=namespace, set_name=set_name, key=key, record_data=product)
+    try:
+        image = Image.open(img_path + key + ".jpg")
+        product["img_embedding"] = create_embedding(image)
+    except:
+        return
+    
+    load_categories(product["category"], product["subCategory"], product["articleType"], product["usage"])
+    vector_client.upsert(namespace=namespace, set_name=set_name, key=key, record_data=product)
 
 # Add categories and article types to helper record
 def load_categories(cat, subCat, artType, usage):

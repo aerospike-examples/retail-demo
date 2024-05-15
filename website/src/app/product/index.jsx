@@ -16,12 +16,11 @@ export const productLoader = async (product) => {
         status: 404,
         statusText: "Not Found"
     });
-    console.log(data)
     return data;
 }
 
 const Product = () => {
-    const { product, related } = useLoaderData();
+    const { product, related, also_bought } = useLoaderData();
 
     return (
         <>
@@ -45,6 +44,7 @@ const Product = () => {
                     </div>
                 </div>
                 <ProdDisplayHorizontal products={related} title="Similar items" />
+                <ProdDisplayHorizontal products={also_bought} title="Also bought" />
             </div>
         </>
     )

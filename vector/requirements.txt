@@ -1,7 +1,7 @@
 # Aerospike dependencies
---extra-index-url https://aerospike.jfrog.io/artifactory/api/pypi/aerospike-pypi-dev/simple
 aerospike-vector-search
 aerospike
+gremlinpython
 
 # Web Server 
 fastapi
