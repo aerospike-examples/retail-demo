@@ -53,3 +53,4 @@ l10n/
 data/images/**.jpg
 data/styles/**.json
 aerospike/backup/**
+aerospike/features.conf
