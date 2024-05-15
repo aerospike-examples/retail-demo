@@ -7,23 +7,39 @@ export const searchLoader = async ({ request }) => {
     let query = url.searchParams.get("q");
     let response = await fetch(`http://localhost:8080/rest/v1/search?q=${query}`);
     let results = await response.json();
-    return {results, query};
+    return { results, query };
 }
 
-export const categoryLoader = async (category) => {
-    let response = await fetch(`http://localhost:8080/rest/v1/category?cat=${category}`);
+export const categoryLoader = async (idx, filter) => {
+    let index;
+    switch (idx) {
+        case "cat":
+            index = "category";
+            break;
+        case "sub":
+            index = "subCategory";
+            break;
+        case "use":
+            index = "usage";
+            break;
+        default:
+            index = ""
+    }
+    console.log(index)
+    let response = await fetch(`http://localhost:8080/rest/v1/category?idx=${index}&filter_value=${filter}`);
+    
     let results = await response.json();
-    return {results, category};
+    return { results, filter };
 }
 
 const Products = () => {
-    const {results: { products, time }, query = null, category = null} = useLoaderData();
+    const {results: { products, time }, query = null, filter = null} = useLoaderData();
 
     return (
         <div className={styles.container}>
             <div className={styles.resultMeta}>
                 {query && <span className={styles.filter}>Results for <strong>{query}</strong></span>}
-                {category && <span className={styles.filter}>Category <strong>{category}</strong></span>}
+                {filter && <span className={styles.filter}>Category <strong>{filter}</strong></span>}
                 <span className={styles.time}>Query executed in {time}ms</span>
             </div>
             <div className={styles.products}>

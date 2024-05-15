@@ -18,7 +18,7 @@ const Routes = () => {
                     {index: true, element: <Home />, loader: homeLoader},
                     {path: "/search", element: <Products />, loader: searchLoader},
                     {path: "/product/:product", element: <Product />, loader: ({params: { product }}) => productLoader(product)},
-                    {path: "/category/:category", element: <Products />, loader: ({params: { category }}) => categoryLoader(category)}
+                    {path: "/category/:idx/:filter", element: <Products />, loader: ({params: { idx, filter }}) => categoryLoader(idx, filter)}
                 ]
             }]
         }

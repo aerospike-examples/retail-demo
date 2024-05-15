@@ -11,6 +11,12 @@
     border-radius: 20px;
     background-color: rgba(211, 211, 211, .3);
 }
+a.item {
+    color: navy;
+}
+a.item:hover {
+    text-decoration: underline;
+}
 .chevron {
     transform: scale(.7);
 }

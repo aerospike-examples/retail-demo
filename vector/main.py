@@ -46,11 +46,11 @@ app.add_middleware(
 
 @app.get("/rest/v1/home")
 async def get_home():
-    shoes = aerospike_query(index="subCategory", filter_value="Shoes")
-    bags = aerospike_query(index="subCategory", filter_value="Bags")
-    wallets = aerospike_query(index="subCategory", filter_value="Wallets")
-    watches = aerospike_query(index="subCategory", filter_value="Watches")
-    headwear = aerospike_query(index="subCategory", filter_value="Headwear")
+    (shoes, _) = await aerospike_query(index="subCategory", filter_value="Shoes")
+    (bags, _) = await aerospike_query(index="subCategory", filter_value="Bags")
+    (wallets, _) = await aerospike_query(index="subCategory", filter_value="Wallets")
+    (watches, _) = await aerospike_query(index="subCategory", filter_value="Watches")
+    (headwear, _) = await aerospike_query(index="subCategory", filter_value="Headwear")
 
     return {
         "Shoes": shoes, 
@@ -62,29 +62,30 @@ async def get_home():
 
 @app.get("/rest/v1/get")
 async def get_product(prod: str):
-    key = (namespace, set_name, prod)
+    
     try:
-        (_, _, bins) = aerospike_client.get(key=key)
+        product = await aerospike_get_product(prod)
         
-        embedding_bytes = bins.pop('img_embedding', None)[22:]
+        embedding_bytes = product.pop('img_embedding', None)[22:]
         embedding = array.array('f', embedding_bytes).tolist()        
-        search = vector_search(embedding, bins=["id", "name", "images", "brandName"], count=11)
+        (search, _) = await vector_search(embedding, bins=["id", "name", "images", "brandName"], count=11)
 
         related = []
         for item in search:
             if not str(item.fields["id"]) == str(prod):
                 related.append(item.fields)
         
-        results = get_also_bought(key=prod)
+        results = await get_also_bought(key=prod)
 
         also_bought = []
         for result in results:
-            product = {}
-            for key in result:
-                product[key] = result[key][0].value
-            also_bought.append(product)   
+            if not result["id"][0].value == prod:
+                prd = {}
+                for key in result:
+                    prd[key] = result[key][0].value
+                also_bought.append(prd)   
 
-        return {"error": None, "product": bins, "related": related, "also_bought": also_bought}
+        return {"error": None, "product": product, "related": related, "also_bought": also_bought}
     except Exception as e:
         print(e)
         return {"error": "Product not found"}
@@ -92,10 +93,7 @@ async def get_product(prod: str):
 @app.get("/rest/v1/search")
 async def search(q: str):
     embedding = create_embedding(q)
-    
-    start = time.time()
-    results = vector_search(embedding, bins=["id", "name", "images", "brandName"])
-    time_taken = time.time() - start
+    results, time = await vector_search(embedding, bins=["id", "name", "images", "brandName"])
 
     products = []
     for result in results:
@@ -103,35 +101,59 @@ async def search(q: str):
         product["distance"] = result.distance
         products.append(product)
     
-    return { "products": products, "time": round(time_taken * 1000, 3) }
+    return { "products": products, "time": time }
 
 @app.get("/rest/v1/category")
-async def get_category(cat: str):
-    pass
+async def get_category(idx: str, filter_value: str):
+    
+    products, time = await aerospike_query(index=idx, filter_value=filter_value, count=20)
 
-def get_also_bought(key, count=10):
-    return g.V(key).in_("bought").out("bought").dedup().order().by(__.in_("bought").count()).limit(count).property_map().to_list()
+    return {"products": products, "time": time}
 
-def vector_search(embedding, bins=None, count=20):
-    return vector_client.vector_search(
+async def get_also_bought(key, count=10):
+    return (
+        g.V(key)
+            .in_("bought")
+            .out("bought")
+            .dedup()
+            .order().by(__.in_("bought").count())
+            .limit(count)
+            .property_map()
+            .to_list()
+    )
+
+async def vector_search(embedding, bins=None, count=20):
+    start = time.time()
+    results = vector_client.vector_search(
         namespace=namespace,
         index_name=index_name,
         query=embedding,
         limit=count,
         field_names=bins
     )
+    time_taken = time.time() - start
 
-def aerospike_query(index, filter_value, count=10):
+    return results, round(time_taken * 1000, 3)
+
+async def aerospike_get_product(prod):
+    key = (namespace, set_name, prod)
+    (_, _, bins) = aerospike_client.get(key)
+    
+    return bins
+
+async def aerospike_query(index, filter_value, count=10):
     query = aerospike_client.query(namespace=namespace, set=set_name)
     query.where(p.equals(index, filter_value))
     query.select("id", "name", "images", "brandName")
     query.max_records = count
 
+    start = time.time()
     records = query.results()
+    time_taken = time.time() - start
     
     products = []
     for record in records:
         (_, _, bins) = record
         products.append(bins)
     
-    return products
+    return products, round(time_taken * 1000, 3)
