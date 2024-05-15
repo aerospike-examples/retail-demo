@@ -1,9 +1,7 @@
 import os
 import array
 import time
-from typing import Annotated
-from fastapi import FastAPI, Depends, HTTPException, Form, status
-from fastapi.responses import StreamingResponse
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from embed import create_embedding
 from clients import vector_client, aerospike_client
@@ -11,7 +9,6 @@ from aerospike import predicates as p
 from dotenv import load_dotenv
 from gremlin_python.process.graph_traversal import __
 from gremlin_python.process.anonymous_traversal import traversal
-from gremlin_python.process.traversal import IO
 from gremlin_python.driver.aiohttp.transport import AiohttpTransport
 from gremlin_python.driver.driver_remote_connection import DriverRemoteConnection
 
