@@ -52,7 +52,7 @@ l10n/
 # images
 data/images/**.jpg
 data/styles/**.json
-aerospike/backup/**
-aerospike/features.conf
+**/backup
+**/features.conf
 
-*/target/**
+*/target

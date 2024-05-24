@@ -1,28 +1,12 @@
-import os
 import array
-import time
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from embed import create_embedding
-from clients import vector_client, aerospike_client
-from aerospike import predicates as p
-from dotenv import load_dotenv
-from gremlin_python.process.graph_traversal import __
-from gremlin_python.process.anonymous_traversal import traversal
-from gremlin_python.driver.aiohttp.transport import AiohttpTransport
-from gremlin_python.driver.driver_remote_connection import DriverRemoteConnection
+from functions.embed import create_embedding
+from functions.key_value import aerospike_get_product, aerospike_query
+from functions.graph import get_also_bought
+from functions.vector import vector_search
 
-# Load .env file
-load_dotenv("../.env")
-
-# Get .env variables
-namespace = os.getenv("PROXIMUS_NAMESPACE")
-set_name = os.getenv("PROXIMUS_SET")
-index_name = os.getenv("PROXIMUS_INDEX_NAME")
-
-connection = DriverRemoteConnection("ws://localhost:8182/gremlin", "g", transport_factory=lambda:AiohttpTransport(call_from_event_loop=True))
-g = traversal().with_remote(connection)
-
+# Instantiates the app to serve the API 
 app = FastAPI(
     title="Aerospike Vector Search",
     openapi_url=None,
@@ -31,16 +15,18 @@ app = FastAPI(
     swagger_ui_oauth2_redirect_url=None
 )
 
-origins = ["*"]
-
+# Add CORS middleware to allow calls from the browser front end to the API
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
+# Called when navigating to the homepage
+# Performs secondary index queries on multiple "subCategory" values
+# Returns and object containing the result of each query
 @app.get("/rest/v1/home")
 async def get_home():
     (shoes, _) = await aerospike_query(index="subCategory", filter_value="Shoes")
@@ -57,23 +43,33 @@ async def get_home():
         "Headwear": headwear
     }
 
+# Called for product details
+# Performs a key-value lookup on the specified product 
+# Uses the product vector embedding in a cosine similarity search
+# Uses the product key to traverse the graph and identify items also bought by other customers
+# Returns and object containing the result of each query   
 @app.get("/rest/v1/get")
 async def get_product(prod: str):
-    
     try:
+        # Gets product data through a key-value lookup
         product = await aerospike_get_product(prod)
         
+        # Decodes the vector embedding and creates a list object
         embedding_bytes = product.pop('img_embedding', None)[22:]
-        embedding = array.array('f', embedding_bytes).tolist()        
+        embedding = array.array('f', embedding_bytes).tolist()  
+        # Performs cosine similarity search using the products vector embedding      
         (search, _) = await vector_search(embedding, bins=["id", "name", "images", "brandName"], count=11)
 
+        # Creates a list of related product dictionaries while removing this product 
         related = []
         for item in search:
             if not str(item.fields["id"]) == str(prod):
                 related.append(item.fields)
         
+        # Performs the graph traversal for recommended items
         results = await get_also_bought(key=prod)
 
+        # Creates a list of recommended product dictionaries while removing this product
         also_bought = []
         for result in results:
             if not result["id"][0].value == prod:
@@ -83,15 +79,20 @@ async def get_product(prod: str):
                 also_bought.append(prd)   
 
         return {"error": None, "product": product, "related": related, "also_bought": also_bought}
-    except Exception as e:
-        print(e)
+    except:
         return {"error": "Product not found"}
 
+# Called when searching products
+# Turns text query into a vector embedidng that can be used for cosine similarity search with the vector client
+# Returns the top 20 results ordered by distance, along with query execution time
 @app.get("/rest/v1/search")
 async def search(q: str):
+    # Generate vector embedding on the query text
     embedding = create_embedding(q)
+    # Get the results of the vector search
     results, time = await vector_search(embedding, bins=["id", "name", "images", "brandName"])
 
+    # Creates a list of product dictionaries most similar to the query
     products = []
     for result in results:
         product = result.fields
@@ -100,57 +101,12 @@ async def search(q: str):
     
     return { "products": products, "time": time }
 
+# Called when looking at specific "category", "subCategory", or "usage" pages
+# Performs a secondary index query on the provided index using the provided filter value
+# Returns the first 20 results, along with execution time  
 @app.get("/rest/v1/category")
 async def get_category(idx: str, filter_value: str):
-    
+    # Get the results of the secondary index query
     products, time = await aerospike_query(index=idx, filter_value=filter_value, count=20)
 
     return {"products": products, "time": time}
-
-async def get_also_bought(key, count=10):
-    return (
-        g.V(key)
-            .in_("bought")
-            .out("bought")
-            .dedup()
-            .order().by(__.in_("bought").count())
-            .limit(count)
-            .property_map()
-            .to_list()
-    )
-
-async def vector_search(embedding, bins=None, count=20):
-    start = time.time()
-    results = vector_client.vector_search(
-        namespace=namespace,
-        index_name=index_name,
-        query=embedding,
-        limit=count,
-        field_names=bins
-    )
-    time_taken = time.time() - start
-
-    return results, round(time_taken * 1000, 3)
-
-async def aerospike_get_product(prod):
-    key = (namespace, set_name, prod)
-    (_, _, bins) = aerospike_client.get(key)
-    
-    return bins
-
-async def aerospike_query(index, filter_value, count=10):
-    query = aerospike_client.query(namespace=namespace, set=set_name)
-    query.where(p.equals(index, filter_value))
-    query.select("id", "name", "images", "brandName")
-    query.max_records = count
-
-    start = time.time()
-    records = query.results()
-    time_taken = time.time() - start
-    
-    products = []
-    for record in records:
-        (_, _, bins) = record
-        products.append(bins)
-    
-    return products, round(time_taken * 1000, 3)

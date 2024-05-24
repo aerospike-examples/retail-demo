@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styles from "./index.module.css";
 import Thumbnail from "../thumbnail";
+import { fixImgUrl } from "../../utils";
 
 const Images = ({images}) => {
     const [selected, setSelected] = useState("default");
@@ -15,7 +16,7 @@ const Images = ({images}) => {
                 ))}
             </div>
             <div className={styles.selectedImg}>
-                <img src={images[selected].imageURL} />
+                <img src={fixImgUrl(images[selected]?.imageURL)} />
             </div>
         </div>
     )

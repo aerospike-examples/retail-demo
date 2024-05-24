@@ -1,0 +1,8 @@
+# Aerospike dependencies
+aerospike-vector-search
+aerospike
+
+# Vector dependencies
+sentence_transformers
+torch
+Pillow

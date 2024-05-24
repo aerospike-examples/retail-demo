@@ -9,11 +9,12 @@ cluster:
 # The Proximus service listening ports, TLS and network interface.
 service:
   ports:
-    5002: {}
-  advertised-listeners:
-    default:
-      address: 127.0.0.1
-      port: 5002
+    5000: {}
+  # Required when running behind NAT
+  #advertised-listeners:
+  #  default:
+  #    address: 127.0.0.1
+  #    port: 5000
 
 # Management API listening ports, TLS and network interface.
 manage:
