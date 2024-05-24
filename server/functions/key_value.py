@@ -1,7 +1,7 @@
 import os
 import time
 import aerospike
-from aerospike import predicates as p
+from aerospike import predicates as p # type: ignore
 from dotenv import load_dotenv
 
 # Load .env file

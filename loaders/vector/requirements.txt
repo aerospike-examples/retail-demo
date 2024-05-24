@@ -1,6 +1,7 @@
 # Aerospike dependencies
 aerospike-vector-search
 aerospike
+python-dotenv
 
 # Vector dependencies
 sentence_transformers
