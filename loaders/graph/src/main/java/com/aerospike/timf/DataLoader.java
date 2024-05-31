@@ -93,6 +93,9 @@ public class DataLoader {
     }
     private void updateIndexes(Record record) {
         Object binValue = record.getValue("id");
+        if(binValue == null) {
+            return;
+        }
         String id = binValue.toString();
 
         validIds.add(id);
@@ -322,6 +325,9 @@ public class DataLoader {
         String image_180X240 = (String) traverseMapPath(imageMap, "search", "resolutions", "180X240");
         
         Object binValue = record.getValue("id");
+        if(binValue == null) {
+            return;
+        }
         String id = binValue.toString();
 
         g.addV("product")
