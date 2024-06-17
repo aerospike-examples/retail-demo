@@ -1,16 +1,10 @@
 import time
-from aerospike_vector_search import types, client as vector_client
+from clients import vector_client as client
 
 # Get .env variables
 namespace = "retail-vector"
 set_name = "products"
 index_name = "product_img"
-
-vect_host = types.HostPort(host="localhost", port=5000)
-
-# Initialize vector client 
-# Used for writing/reading data to/from Aerospike using the vector index
-client = vector_client.Client(seeds=vect_host)
 
 # Cosine similarity search accross products in Aerospike
 # Gets the top N products most similar to the provided vector embedding
