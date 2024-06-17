@@ -1,20 +1,10 @@
-import os
 import time
-import aerospike
+from clients import aerospike_client as client
 from aerospike import predicates as p # type: ignore
-from dotenv import load_dotenv
-
-# Load .env file
-# Can be skipped if using env variables set in the OS
-load_dotenv("../.env")
 
 # Get .env variables
-namespace = os.getenv("VECTOR_NAMESPACE")
-set_name = os.getenv("VECTOR_SET")
-
-# Initialize aerospike client
-# Used for key-value look, sindex queries, and task not requiring the vector index
-client = aerospike.client({"hosts": [("localhost", 3000)]})
+namespace = "retail-vector"
+set_name = "products"
 
 # Key-Value lookup of a specified product
 # Gets the product record

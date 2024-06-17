@@ -1,0 +1,6 @@
+/config/**
+/data/**
+
+.venv
+**/node_modules
+**/dist

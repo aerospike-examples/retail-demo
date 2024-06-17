@@ -1,10 +1,10 @@
 import array
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from functions.embed import create_embedding
-from functions.key_value import aerospike_get_product, aerospike_query
-from functions.graph import get_also_bought
-from functions.vector import vector_search
+from embed import create_embedding
+from serve.key_value import aerospike_get_product, aerospike_query
+from serve.graph import get_also_bought
+from serve.vector import vector_search
 
 # Instantiates the app to serve the API 
 app = FastAPI(

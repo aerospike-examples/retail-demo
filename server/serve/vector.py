@@ -1,18 +1,12 @@
-import os
 import time
 from aerospike_vector_search import types, client as vector_client
-from dotenv import load_dotenv
-
-# Load .env file
-# Can be skipped if using env variables set in the OS
-load_dotenv("../.env")
 
 # Get .env variables
-namespace = os.getenv("VECTOR_NAMESPACE")
-set_name = os.getenv("VECTOR_SET")
-index_name = os.getenv("VECTOR_INDEX_NAME")
+namespace = "retail-vector"
+set_name = "products"
+index_name = "product_img"
 
-vect_host = types.HostPort(host="localhost", port=5002)
+vect_host = types.HostPort(host="localhost", port=5000)
 
 # Initialize vector client 
 # Used for writing/reading data to/from Aerospike using the vector index

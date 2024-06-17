@@ -3,6 +3,7 @@ aerospike-vector-search
 aerospike
 gremlinpython
 async_timeout
+faker
 
 # Web Server 
 fastapi

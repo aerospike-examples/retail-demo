@@ -34,8 +34,9 @@ interconnect:
 # Target Aerospike cluster
 aerospike:
   seeds:
-    - localhost:
+    - aerospike-cluster:
         port: 3000
+  metadata-namespace: "avs-meta"
 
 # File based credentials store only if security should be enabled.
 #security:
