@@ -1,5 +1,5 @@
 [context.production.environment]
-    SERVER = "https://server.retail-demo.aerospike.com"
+    VITE_SERVER = "https://server.retail-demo.aerospike.com"
 
 [[redirects]]
     from = "/*"    

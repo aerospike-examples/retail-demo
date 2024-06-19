@@ -8,7 +8,7 @@ import StyleOptions from "../../components/styleOptions";
 import ProdDisplayHorizontal from "../../components/prodDisplayHorizontal";
 import SizeOptions from "../../components/sizeOptions";
 
-const server = process.env.SERVER ?? import.meta.env.VITE_SERVER;
+const server = import.meta.env.VITE_SERVER;
 
 export const productLoader = async (product) => {
     let response = await fetch(`${server}/rest/v1/get?prod=${product}`);

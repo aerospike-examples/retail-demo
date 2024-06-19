@@ -3,7 +3,7 @@ import styles from "./index.module.css";
 import { useLoaderData } from "react-router-dom";
 import ProdDisplayHorizontal from "../../components/prodDisplayHorizontal";
 
-const server = process.env.SERVER ?? import.meta.env.VITE_SERVER;
+const server = import.meta.env.VITE_SERVER;
 
 export const homeLoader = async () => {
     let response = await fetch(`${server}/rest/v1/home`);

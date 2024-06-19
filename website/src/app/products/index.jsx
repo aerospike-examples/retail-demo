@@ -2,7 +2,7 @@ import { useLoaderData } from "react-router-dom";
 import styles from "./index.module.css";
 import Card from "../../components/card";
 
-const server = process.env.SERVER ?? import.meta.env.VITE_SERVER;
+const server = import.meta.env.VITE_SERVER;
 
 export const searchLoader = async ({ request }) => {
     let url = new URL(request.url);
