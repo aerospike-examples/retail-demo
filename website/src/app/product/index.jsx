@@ -8,8 +8,10 @@ import StyleOptions from "../../components/styleOptions";
 import ProdDisplayHorizontal from "../../components/prodDisplayHorizontal";
 import SizeOptions from "../../components/sizeOptions";
 
+const server = process.env.SERVER ?? import.meta.env.VITE_SERVER;
+
 export const productLoader = async (product) => {
-    let response = await fetch(`http://localhost:8080/rest/v1/get?prod=${product}`);
+    let response = await fetch(`${server}/rest/v1/get?prod=${product}`);
     let { error, ...data } = await response.json();
 
     if(error) throw new Response("", {

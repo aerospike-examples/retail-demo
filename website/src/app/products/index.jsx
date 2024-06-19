@@ -2,10 +2,12 @@ import { useLoaderData } from "react-router-dom";
 import styles from "./index.module.css";
 import Card from "../../components/card";
 
+const server = process.env.SERVER ?? import.meta.env.VITE_SERVER;
+
 export const searchLoader = async ({ request }) => {
     let url = new URL(request.url);
     let query = url.searchParams.get("q");
-    let response = await fetch(`http://localhost:8080/rest/v1/search?q=${query}`);
+    let response = await fetch(`${server}/rest/v1/search?q=${query}`);
     let results = await response.json();
     return { results, query };
 }
@@ -25,8 +27,7 @@ export const categoryLoader = async (idx, filter) => {
         default:
             index = ""
     }
-    console.log(index)
-    let response = await fetch(`http://localhost:8080/rest/v1/category?idx=${index}&filter_value=${filter}`);
+    let response = await fetch(`${server}/rest/v1/category?idx=${index}&filter_value=${filter}`);
     
     let results = await response.json();
     return { results, filter };
