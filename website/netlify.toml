@@ -7,4 +7,4 @@
     status = 200
 
 [images]
-  remote_images = ["https:\\/\\/assets\\.myntassets\\.com\\/.*"]
+  remote_images = ["https://assets.myntassets.com/.*"]
