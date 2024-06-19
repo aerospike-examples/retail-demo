@@ -1,5 +1,7 @@
-[context.production.environment]
-    VITE_SERVER = "https://server.retail-demo.aerospike.com"
+[[redirects]]
+    from = "/api/*"    
+    to = "/.netlify/:splat"    
+    status = 200
 
 [[redirects]]
     from = "/*"    
