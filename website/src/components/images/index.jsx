@@ -5,7 +5,7 @@ import { fixImgUrl } from "../../utils";
 
 const Images = ({images}) => {
     const [selected, setSelected] = useState("default");
-    const { default: def, ...rest } = images;
+    const { default: def, search, ...rest } = images;
 
     return (
         <div className={styles.images}>
@@ -16,7 +16,7 @@ const Images = ({images}) => {
                 ))}
             </div>
             <div className={styles.selectedImg}>
-                <img src={fixImgUrl(images[selected]?.imageURL)} />
+                <img src={fixImgUrl(images[selected]?.resolutions["360X480"])} />
             </div>
         </div>
     )

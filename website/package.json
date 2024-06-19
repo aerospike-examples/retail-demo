@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "cross-env VITE_SERVER=http://localhost:8080 vite",
     "build": "vite build",
     "build-local": "cross-env VITE_SERVER=http://localhost:8080 vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",

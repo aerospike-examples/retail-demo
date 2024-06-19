@@ -56,3 +56,4 @@ data/styles/**.json
 **/features.conf
 
 */target
+image_upload.py
