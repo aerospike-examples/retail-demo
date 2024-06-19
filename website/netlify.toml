@@ -2,6 +2,7 @@
     from = "/api/*"    
     to = "/.netlify/:splat"    
     status = 200
+    force = true
 
 [[redirects]]
     from = "/*"    
