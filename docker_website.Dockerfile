@@ -4,6 +4,6 @@ RUN mkdir /website
 COPY ./website /website
 WORKDIR /website
 
-RUN yarn && yarn build
+RUN yarn && yarn build-local
 
 CMD [ "yarn", "preview", "--host", "0.0.0.0"]

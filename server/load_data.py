@@ -25,8 +25,8 @@ valid_ids = []
 # Similar variant 2: Same gender, usage, category, different season, different id
 similar_variants = [
     {"list": ["gender", "season", "usage", "brandName"]},
-    {"list": ["season", "usage", "brandName"], "attribute": "subCategory"},
-    {"list": ["gender", "usage", "category"], "attribute": "season"}
+    {"list": ["season", "usage", "category"], "attribute": "brandName"},
+    {"list": ["gender", "usage", "subCategory"], "attribute": "season"}
 ]
 similar_indexes = [defaultdict(set), defaultdict(set), defaultdict(set)]
 
