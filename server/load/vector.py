@@ -1,5 +1,4 @@
-from aerospike_vector_search import types, Client as VectorClient
-from clients import vector_admin as admin
+from aerospike_vector_search import types, Client as VectorClient, AdminClient as VectorAdmin
 from embed import MODEL_DIM
 
 namespace = "retail-vector"
@@ -8,7 +7,7 @@ index_name = "product_img"
 
 # Creates the vector index on the "img_embedding" bin
 # Returns if it already exists
-def create_vector_index():   
+def create_vector_index(admin: VectorAdmin):   
     print("Checking for vector index")
     
     for idx in admin.index_list():
