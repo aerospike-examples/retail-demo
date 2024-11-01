@@ -16,10 +16,10 @@ services:
       - retail-demo
 
   aerospike-vector:
-    image: aerospike/aerospike-proximus:0.4.0
+    image: aerospike/aerospike-vector-search:0.11.1
     container_name: "aerospike-vector"
     volumes:
-      - ${PWD}/config/vector:/etc/aerospike-proximus
+      - ${PWD}/config/vector:/etc/aerospike-vector-search
     depends_on:
       aerospike-cluster:
         condition: service_healthy
@@ -46,6 +46,9 @@ services:
       - "8080:8080"
     volumes:
       - ${PWD}/data:/server/data
+    depends_on:
+      - aerospike-graph
+      - aerospike-vector
     networks:
       - retail-demo
 
@@ -60,4 +63,5 @@ services:
       - retail-demo
 
 networks:
-  retail-demo: {}
+  retail-demo:
+    driver: bridge

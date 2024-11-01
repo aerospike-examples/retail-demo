@@ -1,1 +1,0 @@
-Download the [kaggle fashion dataset](https://www.kaggle.com/datasets/paramaggarwal/fashion-product-images-dataset) and place the contents of the `/styles/` directory in this folder.
