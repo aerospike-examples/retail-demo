@@ -1,0 +1,34 @@
+@startuml
+title Retail Example: C4 Component Diagram
+
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+
+ComponentDb(AerospikeServer, "Cluster", "Aerospike") 
+
+   
+Component(AerospikeVectorSearch, "Vector service", "Aerospike")
+
+
+
+Component(AerospikeGraphService, "Graph service", "Aerospike")
+  
+
+Component(AerospikeClient, "Retail service", "Python", "Backend service for online store")
+
+
+Component(WebSite, "Retailer Website", "Node.js", "Online store")
+
+
+Person(User, "Customer", "Customer of the Retailer")
+
+Rel_R(User,WebSite, "Uses", "http")
+Rel_R(AerospikeVectorSearch, AerospikeServer,"Reads/Writes", "tcp") 
+Rel_L(AerospikeGraphService, AerospikeServer, "Reads/Writes", "tcp")  
+Rel_R(AerospikeClient, AerospikeServer, "Reads/Writes", "tcp")
+Rel(AerospikeClient,AerospikeVectorSearch, "Search/Writes", "tcp")
+Rel(AerospikeClient, AerospikeGraphService, "Gremlin", "tcp")
+Rel(WebSite, AerospikeClient, "REST API", "http")
+
+@enduml
+

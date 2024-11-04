@@ -1,0 +1,58 @@
+@startuml
+title Retail Example: C4 Component Diagram
+
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Deployment.puml
+
+Deployment_Node(docker, "Local machine", "Docker", "Docker Compose"){
+    
+
+   
+    Deployment_Node(website, "aerospike-website", "Node.js"){
+        AddProperty("Port", "4173")
+        AddProperty("Network", "retail-demo")
+        AddProperty("Depends On", "Aerospike Client")
+        AddProperty("build", "${PWD}/website")
+        Container(web, "Retailer Website", "Online store")
+    }
+    Deployment_Node(server, "aerospike-client", "Pytnon", "Retailer server"){
+        AddProperty("image", "aerospike/aerospike-client:latest")
+        AddProperty("Port", "8080")
+        AddProperty("Network", "retail-demo")
+        AddProperty("Depends On", "Aerospike Cluster")
+        AddProperty("build", "${PWD}/server")
+        Container(client, "Retail service", "Backend service for online store")
+    }
+    Deployment_Node(vector, "aerospike-vector", "Aerospike"){
+        AddProperty("image", "aerospike/aerospike-vector-search:latest")
+        AddProperty("Network", "retail-demo")
+        AddProperty("Depends On", "Aerospike Cluster")
+        Container(vector_service, "Aerospike Vector service", "Provides scalable vector index and search")
+    }
+    Deployment_Node(cluster, "aerospike-cluster", "aerospike"){
+        AddProperty("image", "aerospike/aerospike-server-enterprise:latest")
+        AddProperty("Configuration File", "${PWD}/config/aerospike/aerospike.conf")
+        AddProperty("Data Storage", "${PWD}/data/aerospike")
+        AddProperty("Port", "3000")
+        AddProperty("Network", "retail-demo")
+        ContainerDb(cluster_db, "Cluster", "Aerospike Cluster", "Stores product and user information; and provides vertor index and graph.")
+    }
+
+
+    Deployment_Node(graph,"aerospike-graph", "Aerospike", "Graph service"){
+            AddProperty("image", "aerospike/aerospike-graph-service:latest")
+            AddProperty("Network", "retail-demo")
+            AddProperty("Depends On", "Aerospike Cluster")
+            Container(graph_service, "Aerospike Graph service", "Provides scallable grapgqueries in Gremlin")
+        }
+}
+
+Rel(vector_service, cluster_db,  "Reads/Writes", "tcp")
+Rel(graph_service, cluster_db,  "Reads/Writes", "tcp")
+Rel(client, cluster_db,  "Document Reads/Writes", "tcp")
+Rel(client, vector_service,  "Search/Writes", "tcp")
+Rel(client, graph_service,  "Gremlin", "tcp")
+Rel(web, client,  "REST API", "http")
+
+
+SHOW_LEGEND()
+@enduml

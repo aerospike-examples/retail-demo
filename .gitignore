@@ -57,3 +57,6 @@ data/styles/**.json
 
 */target
 image_upload.py
+
+# Cluster data
+data/aerospike/**.dat 

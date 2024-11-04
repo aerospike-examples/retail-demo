@@ -7,6 +7,7 @@ services:
       - "3000:3000"
     volumes:
       - ${PWD}/config/aerospike:/etc/aerospike
+      - ${PWD}/data/aerospike:/opt/aerospike/data
     healthcheck:
       test: [ "CMD", "asinfo", "-p", "3000", "-v", "build" ]
       interval: 30s
