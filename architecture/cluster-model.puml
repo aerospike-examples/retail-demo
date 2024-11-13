@@ -1,0 +1,40 @@
+title Entities
+
+hide empty members
+hide circle
+class Product {
+    - id: int 
+    - price: decimal
+    - salePrice: decimal
+    - name: string 
+    - descriptors: list<string> 
+    - variantName: string 
+    - added: date 
+    - brandName: string 
+    - brandProfile: uri 
+    - ageGroup: string 
+    - gender: string 
+    - colors: list<string> 
+    - season: string 
+    - usage: string 
+    - articleAttr: list<string> 
+    - images: list<uri> 
+    - displayCat: list<string> 
+    - category: string 
+    - subCategory: string 
+    - articleType: string 
+    - options: list<string> 
+}
+
+class User {
+    - id: uuid
+    - firstName string 
+    - lastName string 
+    - address fastring 
+    - city string 
+    - state string
+    - zip string 
+}
+
+User - Product 
+@enduml
