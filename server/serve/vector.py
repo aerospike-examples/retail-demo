@@ -16,7 +16,22 @@ async def vector_search(embedding, bins=None, count=20):
         index_name=index_name,
         query=embedding,
         limit=count,
-        field_names=bins
+        include_fields=bins
+    )
+    time_taken = time.time() - start
+
+    return results, round(time_taken * 1000, 3)
+
+async def vector_search_by_key(key: str, bins: list=None, count: int = 20):
+    start = time.time()
+    results = client.vector_search_by_key(
+        search_namespace=namespace,
+        index_name=index_name,
+        key=key,
+        key_namespace=namespace,
+        vector_field="img_embedding",
+        limit=count,
+        include_fields=bins
     )
     time_taken = time.time() - start
 

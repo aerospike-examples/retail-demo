@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from embed import create_embedding
 from serve.key_value import aerospike_get_product, aerospike_query
 from serve.graph import get_also_bought
-from serve.vector import vector_search
+from serve.vector import vector_search, vector_search_by_key
 
 # Instantiates the app to serve the API 
 app = FastAPI(
@@ -54,17 +54,10 @@ async def get_product(prod: str):
         # Gets product data through a key-value lookup
         product = await aerospike_get_product(prod)
         
-        # Decodes the vector embedding and creates a list object
-        embedding_bytes = product.pop('img_embedding', None)[22:]
-        embedding = array.array('f', embedding_bytes).tolist()  
-        # Performs cosine similarity search using the products vector embedding      
-        (search, _) = await vector_search(embedding, bins=["id", "name", "images", "brandName"], count=11)
-
-        # Creates a list of related product dictionaries while removing this product 
-        related = []
-        for item in search:
-            if not str(item.fields["id"]) == str(prod):
-                related.append(item.fields)
+        # Performs cosine similarity search using the products key to use its vector embedding      
+        (search, _) = await vector_search_by_key(prod, bins=["id", "name", "images", "brandName"], count=10)
+        # Get the fields for each related item in the search result
+        related = [item.fields for item in search]
         
         # Performs the graph traversal for recommended items
         results = await get_also_bought(key=prod)

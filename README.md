@@ -11,11 +11,7 @@ To run locally:
     >The feature key file must have a line item for `vector-service`
 3. Create the containers:
     ```bash
-    DOCKER_BUILDKIT=0 docker-compose up -d # using docker-compose standalone
-    ```
-    or
-    ```bash
-    DOCKER_BUILDKIT=0 docker compose up -d # using docker 
+    DOCKER_BUILDKIT=0 docker compose up -d
     ```
 4. Load data into the database:
     ```bash
