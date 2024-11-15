@@ -29,6 +29,7 @@ async def vector_search_by_key(key: str, bins: list=None, count: int = 20):
         index_name=index_name,
         key=key,
         key_namespace=namespace,
+        key_set=set_name,
         vector_field="img_embedding",
         limit=count,
         include_fields=bins
