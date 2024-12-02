@@ -2,5 +2,5 @@
     padding: 20px;
     display: flex;
     gap: 40px;   
-    overflow-x: scroll;
+    overflow-x: auto;
 }
